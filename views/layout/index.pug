@@ -1,0 +1,19 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Bienes Raices | #{page}
+        link(rel="stylesheet", href="/css/app.css")
+    body(class="min-h-screen bg-gray-100")
+        header.flex.justify-between.p-4
+            div 
+                h2.text-center.text-1xl.font-extrabold Bienes
+                    span.font-normal Raices
+            div.flex.items-center.space-x-4
+                a(href="/auth/sign-in" class='text-black-500 text-xs cursor-pointer') Sign in
+                a(href="/auth/sign-up" class='text-black-500 text-xs cursor-pointer') Sign up
+                a(href="/auth/forgotten-password" class='text-black-500 text-xs cursor-pointer') Forgotten Password
+        main(class="mx-auto container mt-10 px-2")
+            block content
