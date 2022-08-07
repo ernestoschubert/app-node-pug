@@ -1,7 +1,7 @@
 import { check, validationResult } from 'express-validator';
 
-const userValidation = async (req) => {
-    const {repeat_password} = req.body
+export const userValidation = async (req) => {
+    const { repeat_password } = req.body
 
     await check('firstName')
         .notEmpty()
@@ -26,4 +26,27 @@ const userValidation = async (req) => {
     return result
 }
 
-export default userValidation;
+export const emailValidation = async (req, res) => {
+
+    await check('email')
+        .isEmail()
+        .withMessage('Invalid email')
+        .run(req)
+
+    const result = validationResult(req)
+    return result
+}
+
+export const newPassValidation = async (req, res) => {
+    const { repeat_password } = req.body
+
+    await check('password')
+        .isLength({ min: 6 })
+        .withMessage('Password needs minimun 6 characters')
+        .equals(repeat_password)
+        .withMessage('Password and repeat password must be equals')
+        .run(req)
+
+    const result = validationResult(req)
+    return result
+}
