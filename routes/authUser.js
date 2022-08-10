@@ -9,26 +9,28 @@ import {
     getUser,
     resetPassword,
     verifyToken,
-    newPassword
+    newPassword,
+    authenticateUser,
 } from '../controllers/userController.js';
 
 const router = express.Router();
 
-router.get('/sign-in', signIn)
+router.get('/signin', signIn)
+router.post('/signin', authenticateUser)
 
-router.get("/sign-up", signUpView)
-router.post("/sign-up", signUp)
+router.get("/signup", signUpView)
+router.post("/signup", signUp)
 
-router.get("/confirm-account/:token", confirmAccount)
+router.get("/confirmaccount/:token", confirmAccount)
 
 router.get("/users", getUsers)
 router.get("/users/:id", getUser)
 
-router.get("/forgotten-password", forgottenPassword)
-router.post("/forgotten-password", resetPassword)
+router.get("/forgottenpassword", forgottenPassword)
+router.post("/forgottenpassword", resetPassword)
 
 
-router.get("/forgotten-password/:token", verifyToken)
-router.post("/forgotten-password/:token", newPassword)
+router.get("/forgottenpassword/:token", verifyToken)
+router.post("/forgottenpassword/:token", newPassword)
 
 export default router

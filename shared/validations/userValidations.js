@@ -13,7 +13,7 @@ export const userValidation = async (req) => {
         .run(req)
     await check('email')
         .isEmail()
-        .withMessage('Wrong email format')
+        .withMessage('Invalid email')
         .run(req)
     await check('password')
         .isLength({ min: 6 })
@@ -26,7 +26,7 @@ export const userValidation = async (req) => {
     return result
 }
 
-export const emailValidation = async (req, res) => {
+export const emailValidation = async (req) => {
 
     await check('email')
         .isEmail()
@@ -37,7 +37,7 @@ export const emailValidation = async (req, res) => {
     return result
 }
 
-export const newPassValidation = async (req, res) => {
+export const newPassValidation = async (req) => {
     const { repeat_password } = req.body
 
     await check('password')
@@ -45,6 +45,21 @@ export const newPassValidation = async (req, res) => {
         .withMessage('Password needs minimun 6 characters')
         .equals(repeat_password)
         .withMessage('Password and repeat password must be equals')
+        .run(req)
+
+    const result = validationResult(req)
+    return result
+}
+
+export const signInValidations = async (req) => {
+
+    await check('email')
+        .isEmail()
+        .withMessage('Invalid email')
+        .run(req)
+    await check('password')
+        .notEmpty()
+        .withMessage('Password is required')
         .run(req)
 
     const result = validationResult(req)

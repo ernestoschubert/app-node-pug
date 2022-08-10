@@ -1,12 +1,13 @@
 import User from "../models/user.js"
-import { userValidation, newPassValidation } from '../shared/validations/userValidations.js';
-import { generateId } from '../shared/token.js';
+import { userValidation, newPassValidation, signInValidations } from '../shared/validations/userValidations.js';
+import { generateId, generateJWT } from '../shared/token.js';
 import { emailForgottenPassword, emailSignUp } from "../shared/emails.js";
 import bcrypt from 'bcrypt';
 
 export const signIn = (req, res) => {
     res.render('auth/signin', {
-        page: "Sign in"
+        page: "Sign in",
+        csrfToken: req.csrfToken()
     })
 }
 
@@ -15,6 +16,58 @@ export const signUpView = (req, res) => {
         page: "Sign up",
         csrfToken: req.csrfToken()
     })
+}
+
+export const authenticateUser = async (req, res) => {
+
+    const resultValidations = await signInValidations(req)
+
+    if (!resultValidations.isEmpty()) {
+        return res.render('auth/signin', {
+            page: "Sign in",
+            errors: resultValidations.array(),
+            csrfToken: req.csrfToken(),
+        })
+    }
+
+    const { email, password } = req.body
+
+    const user = await User.findOne({ where: { email } })
+
+    if (!user) {
+        return res.render('auth/signin', {
+            page: "Sign in",
+            errors: [{ msg: 'User not found' }],
+            csrfToken: req.csrfToken(),
+        })
+    }
+
+    // check password
+    if(!user.verifyPassword(password)) {
+        return res.render('auth/signin', {
+            page: "Sign in",
+            errors: [{ msg: 'Email or password incorrect' }],
+            csrfToken: req.csrfToken(),
+        })
+    }
+
+    if(!user.confirmed) {
+        return res.render('auth/signin', {
+            page: "Sign in",
+            errors: [{ msg: 'Your account has not yet been confirmed' }],
+            csrfToken: req.csrfToken(),
+        })
+    }
+
+    const token = generateJWT(user.id)
+    console.log(token)
+
+    // storage token on cookies
+    return res.cookie('_token', token, {
+        httpOnly: true,
+        // secure: true,
+        // sameSite: true,
+    }).redirect('/my-properties')
 }
 
 export const signUp = async (req, res) => {
@@ -124,7 +177,7 @@ export const forgottenPassword = (req, res) => {
 }
 
 export const resetPassword = async (req, res) => {
-    const result = emailValidation(req);
+    const result = await emailValidation(req);
 
     if (!result.isEmpty()) {
         return res.render('auth/forgottenpassword', {
@@ -207,7 +260,7 @@ export const newPassword = async (req, res) => {
 
     // hash new password
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash( password, salt);
+    user.password = await bcrypt.hash(password, salt);
     user.token = null;
 
     await user.save();
