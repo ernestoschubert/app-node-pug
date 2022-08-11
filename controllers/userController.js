@@ -67,7 +67,7 @@ export const authenticateUser = async (req, res) => {
         httpOnly: true,
         // secure: true,
         // sameSite: true,
-    }).redirect('/my-properties')
+    }).redirect('/myproperties')
 }
 
 export const signUp = async (req, res) => {

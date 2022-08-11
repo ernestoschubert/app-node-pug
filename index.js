@@ -1,7 +1,8 @@
 import express from 'express';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
-import authUser from './routes/authUser.js';
+import userRoutes from './routes/userRoutes.js';
+import propertyRoutes from './routes/propertyRoutes.js';
 import db from './config/db.js';
 
 // initialize app
@@ -33,7 +34,8 @@ app.set('views', './views');
 app.use(express.static('public'));
 
 // routing
-app.use('/auth', authUser);
+app.use('/auth', userRoutes);
+app.use('/', propertyRoutes);
 
 const PORT = process.env.PORT || 8000;
 
