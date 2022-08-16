@@ -1,3 +1,5 @@
+import Price from '../models/Price.js'
+import Category from '../models/Category.js'
 
 export const admin = (req, res) => {
     res.render('properties/admin', {
@@ -6,10 +8,17 @@ export const admin = (req, res) => {
     })
 }
 
-export const createForm = (req, res) => {
+export const createForm = async (req, res) => {
+    const [categories, prices] = await Promise.all([
+        Category.findAll(),
+        Price.findAll()
+    ])
+
     res.render('properties/createForm', {
         page: 'Create Property',
-        header: true
+        header: true,
+        categories,
+        prices
     })
 }
 
