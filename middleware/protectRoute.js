@@ -25,8 +25,6 @@ const protectRoute = async (req, res, next) => {
     } catch (error) {
         return res.clearCookie('_token').redirect('/auth/signin')
     }
-
-    next()
 }
 
 export default protectRoute

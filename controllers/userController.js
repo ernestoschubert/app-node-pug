@@ -1,7 +1,7 @@
 import User from "../models/user.js"
-import { userValidation, newPassValidation, signInValidations, emailValidation } from '../shared/validations/userValidations.js';
-import { generateId, generateJWT } from '../shared/token.js';
-import { emailForgottenPassword, emailSignUp } from "../shared/emails.js";
+import { userValidation, newPassValidation, signInValidations, emailValidation } from '../helpers/validations/userValidations.js';
+import { generateId, generateJWT } from '../helpers/token.js';
+import { emailForgottenPassword, emailSignUp } from "../helpers/emails.js";
 import bcrypt from 'bcrypt';
 
 export const signIn = (req, res) => {

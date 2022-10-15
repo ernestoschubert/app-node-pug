@@ -1,7 +1,8 @@
 import express from 'express';
 import { body } from 'express-validator'
-import { admin, create, save, remove } from '../controllers/propertyController.js';
+import { admin, create, save, addImg, storageImg, remove } from '../controllers/propertyController.js';
 import protectRoute from '../middleware/protectRoute.js';
+import upload from '../middleware/uploadImage.js';
 
 const router = express.Router();
 
@@ -19,6 +20,10 @@ router.post('/properties/create',
     body('street').notEmpty().withMessage("Location is required"),
     save
 )
+
+router.get("/properties/addimg/:id", protectRoute, addImg)
+
+router.post("/properties/addimg/:id", protectRoute, upload.single("image"), storageImg)
 
 router.delete('/properties/:id', remove)
 

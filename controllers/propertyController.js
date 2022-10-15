@@ -3,8 +3,7 @@ import { Price, Category, Property } from "../models/index.js"
 
 export const admin = (req, res) => {
     res.render('properties/admin', {
-        page: 'My Properties',
-        header: true
+        page: 'My Properties'
     })
 }
 
@@ -16,7 +15,6 @@ export const create = async (req, res) => {
 
     res.render('properties/create', {
         page: 'Create Property',
-        header: true,
         csrfToken: req.csrfToken(),
         categories,
         prices,
@@ -35,7 +33,6 @@ export const save = async (req, res) => {
 
         return res.render('properties/create', {
             page: 'Create Property',
-            header: true,
             csrfToken: req.csrfToken(),
             categories,
             prices,
@@ -79,6 +76,74 @@ export const save = async (req, res) => {
 
         res.redirect(`/properties/addimg/${id}`)
 
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+export const addImg = async (req, res) => {
+
+    const { id } = req.params
+
+    // validate property exist
+
+    const property = await Property.findByPk(id)
+
+    if (!property) {
+        return res.redirect("/myproperties")
+    }
+
+    // validate property isn't published
+
+    if (property.published) {
+        return res.redirect("/myproperties")
+    }
+
+    // validate if user is owner of this property
+    if (property.userId.toString() !== req.user.id.toString()) {
+        return res.redirect("/myproperties")
+    }
+
+    res.render('properties/addimg', {
+        page: `Add images to ${property.title}`,
+        property,
+        csrfToken: req.csrfToken(),
+    })
+}
+
+export const storageImg = async (req, res, next) => {
+
+    const { id } = req.params
+
+    // validate property exist
+
+    const property = await Property.findByPk(id)
+
+    if (!property) {
+        return res.redirect("/myproperties")
+    }
+
+    // validate property isn't published
+
+    if (property.published) {
+        return res.redirect("/myproperties")
+    }
+
+    // validate if user is owner of this property
+    if (property.userId.toString() !== req.user.id.toString()) {
+        return res.redirect("/myproperties")
+    }
+
+    try {
+        console.log(req.file)
+        // storage the img and publicate property
+        property.image = req.file.filename;
+
+        property.published = 1;
+
+        await property.save();
+        next()
     } catch (error) {
         console.log(error)
     }
