@@ -10,7 +10,7 @@ export const emailSignUp = async (data) => {
         }
     });
 
-    const { email, firstName, lastName, token} = data
+    const { email, firstName, lastName, token } = data
 
     await transport.sendMail({
         from: 'BienesRaices.com',
@@ -20,7 +20,7 @@ export const emailSignUp = async (data) => {
         html: `
             <p>Hi ${firstName} ${lastName}, confirm your account</p>
             <p>Your account is ready, just confirm them clicking in this link: 
-            <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 8000}/auth/confirm-account/${token}">Confirm account</a></p>
+            <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 8000}/auth/confirmaccount/${token}">Confirm account</a></p>
 
             <p>If you dont create this account, ignore this message</p>
         `
@@ -37,7 +37,7 @@ export const emailForgottenPassword = async (data) => {
         }
     });
 
-    const { email, firstName, lastName, token} = data
+    const { email, firstName, lastName, token } = data
 
     await transport.sendMail({
         from: 'BienesRaices.com',
@@ -47,7 +47,7 @@ export const emailForgottenPassword = async (data) => {
         html: `
             <p>Hi ${firstName} ${lastName}, you have requested to change your account password</p>
             <p>Click the next link to generate a new password: 
-            <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 8000}/auth/forgotten-password/${token}">Reset password</a></p>
+            <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 8000}/auth/forgottenpassword/${token}">Reset password</a></p>
 
             <p>If you dont request for a password change, ignore this message</p>
         `

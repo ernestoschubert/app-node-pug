@@ -1,5 +1,5 @@
 import User from "../models/user.js"
-import { userValidation, newPassValidation, signInValidations } from '../shared/validations/userValidations.js';
+import { userValidation, newPassValidation, signInValidations, emailValidation } from '../shared/validations/userValidations.js';
 import { generateId, generateJWT } from '../shared/token.js';
 import { emailForgottenPassword, emailSignUp } from "../shared/emails.js";
 import bcrypt from 'bcrypt';
@@ -43,7 +43,7 @@ export const authenticateUser = async (req, res) => {
     }
 
     // check password
-    if(!user.verifyPassword(password)) {
+    if (!user.verifyPassword(password)) {
         return res.render('auth/signin', {
             page: "Sign in",
             errors: [{ msg: 'Email or password incorrect' }],
@@ -51,7 +51,7 @@ export const authenticateUser = async (req, res) => {
         })
     }
 
-    if(!user.confirmed) {
+    if (!user.confirmed) {
         return res.render('auth/signin', {
             page: "Sign in",
             errors: [{ msg: 'Your account has not yet been confirmed' }],
@@ -60,7 +60,6 @@ export const authenticateUser = async (req, res) => {
     }
 
     const token = generateJWT(user.id)
-    console.log(token)
 
     // storage token on cookies
     return res.cookie('_token', token, {

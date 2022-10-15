@@ -1,9 +1,10 @@
-import { exit } from 'node:process'
+import { exit } from "node:process"
 import categories from "./categories.js";
-import Category from "../models/Category.js";
 import prices from "./prices.js";
-import Price from "../models/Price.js";
-import db from '../config/db.js';
+import users from "./users.js";
+import db from "../config/db.js";
+import { User, Price, Category } from "../models/index.js"
+
 
 const importData = async () => {
     try {
@@ -17,9 +18,10 @@ const importData = async () => {
         await Promise.all([
             Category.bulkCreate(categories),
             Price.bulkCreate(prices),
+            User.bulkCreate(users),
         ])
 
-        console.log('import success ')
+        console.log("import success")
         exit() // () === (0) no errors
 
     } catch (error) {
@@ -37,7 +39,7 @@ const removeData = async () => {
         // or
         await db.sync({ force: true })
 
-        console.log('data removed successfully')
+        console.log("data removed successfully")
         exit()
     } catch (error) {
         console.log(error)

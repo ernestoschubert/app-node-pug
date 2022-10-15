@@ -1,7 +1,7 @@
-(function() {
-    const lat = -27.451086;
-    const lng = -58.9864521;
-    const map = L.map('map').setView([lat, lng ], 16);
+(function () {
+    const lat = document.querySelector("#lat").value || -27.451086;
+    const lng = document.querySelector("#lng").value || -58.9864521;
+    const map = L.map('map').setView([lat, lng], 16);
     let marker;
 
     const geocodeService = L.esri.Geocoding.geocodeService();
@@ -17,7 +17,7 @@
     }).addTo(map)
 
     // detect pin moviment
-    marker.on('moveend', function(e) {
+    marker.on('moveend', function (e) {
         marker = e.target
 
         const position = marker.getLatLng();
@@ -25,7 +25,7 @@
         map.panTo(new L.LatLng(position.lat, position.lng))
 
         // get streets on pin move
-        geocodeService.reverse().latlng(position, 13).run(function(error, res) {
+        geocodeService.reverse().latlng(position, 13).run(function (error, res) {
             console.log(res)
             marker.bindPopup(res.address.LongLabel)
 

@@ -27,14 +27,21 @@ const User = db.define('users', {
     },
 }, {
     hooks: {
-        beforeCreate: async function(user) {
+        beforeCreate: async function (user) {
             const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash( user.password, salt);
+            user.password = await bcrypt.hash(user.password, salt);
         }
-    }
+    },
+    scopes: {
+        removePassword: {
+            attributes: {
+                exclude: ['password', 'token', 'confirmed', 'createdAt', 'updatedAt']
+            }
+        }
+    },
 })
 
-User.prototype.verifyPassword = function(password) {
+User.prototype.verifyPassword = function (password) {
     return bcrypt.compareSync(password, this.password)
 }
 
