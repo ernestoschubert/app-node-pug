@@ -1,9 +1,25 @@
 import { validationResult } from "express-validator"
 import { Price, Category, Property } from "../models/index.js"
 
-export const admin = (req, res) => {
+export const admin = async (req, res) => {
+
+    const { id } = req.user;
+
+    console.log(id)
+
+    const properties = await Property.findAll({
+        where: {
+            userId: id
+        },
+        include: [
+            { model: Category, as: 'category' },
+            { model: Price, as: 'price' },
+        ]
+    })
+
     res.render('properties/admin', {
-        page: 'My Properties'
+        page: 'My Properties',
+        properties
     })
 }
 
@@ -139,7 +155,6 @@ export const storageImg = async (req, res, next) => {
         console.log(req.file)
         // storage the img and publicate property
         property.image = req.file.filename;
-
         property.published = 1;
 
         await property.save();
