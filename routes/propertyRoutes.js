@@ -1,10 +1,22 @@
 import express from 'express';
-import { body } from 'express-validator'
-import { admin, create, save, addImg, storageImg, edit, saveChanges, remove } from '../controllers/propertyController.js';
+import { body } from 'express-validator';
 import protectRoute from '../middleware/protectRoute.js';
 import upload from '../middleware/uploadImage.js';
+import {
+    admin,
+    create,
+    save,
+    addImg,
+    storageImg,
+    edit,
+    saveChanges,
+    remove,
+    viewProperty
+} from '../controllers/propertyController.js';
 
 const router = express.Router();
+
+// Protected routes
 
 router.get('/myproperties', protectRoute, admin)
 router.get('/properties/create', protectRoute, create)
@@ -40,5 +52,6 @@ router.post("/properties/edit/:id", protectRoute,
 router.post('/properties/delete/:id', protectRoute, remove)
 
 // Public Area
+router.get('/property/:id', viewProperty)
 
 export default router;

@@ -5,6 +5,7 @@ export default {
     entry: {
         map: './src/js/map.js',
         addImages: './src/js/addImages.js',
+        showMap: './src/js/showMap.js',
     },
     output: {
         filename: '[name].js',
