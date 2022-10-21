@@ -1,11 +1,10 @@
+import { unlink } from "node:fs/promises"
 import { validationResult } from "express-validator"
 import { Price, Category, Property } from "../models/index.js"
 
 export const admin = async (req, res) => {
 
     const { id } = req.user;
-
-    console.log(id)
 
     const properties = await Property.findAll({
         where: {
@@ -19,7 +18,8 @@ export const admin = async (req, res) => {
 
     res.render('properties/admin', {
         page: 'My Properties',
-        properties
+        csrfToken: req.csrfToken(),
+        properties,
     })
 }
 
@@ -152,7 +152,6 @@ export const storageImg = async (req, res, next) => {
     }
 
     try {
-        console.log(req.file)
         // storage the img and publicate property
         property.image = req.file.filename;
         property.published = 1;
@@ -165,6 +164,117 @@ export const storageImg = async (req, res, next) => {
 
 }
 
+export const edit = async (req, res) => {
+    const { id } = req.params
+
+    // validate if property exists
+    const property = await Property.findByPk(id)
+
+    if (!property) res.redirect('/myproperties')
+
+    // verify if user is the owner of the property
+
+    if (property.userId.toString() !== req.user.id.toString()) res.redirect('/myproperties')
+
+    const [categories, prices] = await Promise.all([
+        Category.findAll(),
+        Price.findAll(),
+    ])
+
+    res.render('properties/edit', {
+        page: `Edit Property: ${property.title}`,
+        csrfToken: req.csrfToken(),
+        categories,
+        prices,
+        data: property
+    })
+}
+
+export const saveChanges = async (req, res) => {
+    // Validate form
+    let result = validationResult(req)
+
+    if (!result.isEmpty()) {
+        const [categories, prices] = await Promise.all([
+            Category.findAll(),
+            Price.findAll()
+        ])
+
+        return res.render('properties/edit', {
+            page: `Edit Property: ${req.body.title}`,
+            csrfToken: req.csrfToken(),
+            categories,
+            prices,
+            errors: result.array(),
+            data: req.body
+        })
+    }
+
+    // validate if property exists
+
+    const { id } = req.params
+    const property = await Property.findByPk(id)
+
+    if (!property) res.redirect('/myproperties')
+
+    // verify if user is the owner of the property
+
+    if (property.userId.toString() !== req.user.id.toString()) res.redirect('/myproperties')
+
+    // rewrite object and update
+
+    try {
+        const {
+            title,
+            description,
+            category: categoryId,
+            price: priceId,
+            rooms,
+            parking,
+            bathrooms,
+            street,
+            lat,
+            lng,
+        } = req.body
+
+        property.set({
+            title,
+            description,
+            categoryId,
+            priceId,
+            rooms,
+            parking,
+            bathrooms,
+            street,
+            lat,
+            lng,
+        })
+
+        await property.save();
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
 export const remove = async (req, res) => {
+
+    // validate if property exists
+    const { id } = req.params
+
+    const property = await Property.findByPk(id)
+
+    if (!property) res.redirect('/myproperties')
+
+    // verify if user is the owner of the property
+
+    if (property.userId.toString() !== req.user.id.toString()) res.redirect('/myproperties')
+
+    // delete property images
+    if (property.image) await unlink(`public/uploads/${property.image}`)
+
+    // delete property
+    await property.destroy();
+    return res.redirect('/myproperties')
 
 }
