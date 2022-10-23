@@ -4,23 +4,53 @@ import { Price, Category, Property } from "../models/index.js"
 
 export const admin = async (req, res) => {
 
-    const { id } = req.user;
+    // read querys
+    const { page: actualPage } = req.query
 
-    const properties = await Property.findAll({
-        where: {
-            userId: id
-        },
-        include: [
-            { model: Category, as: 'category' },
-            { model: Price, as: 'price' },
-        ]
-    })
+    const regexExp = /^[0-9]$/
 
-    res.render('properties/admin', {
-        page: 'My Properties',
-        csrfToken: req.csrfToken(),
-        properties,
-    })
+    if (!regexExp.test(actualPage)) res.redirect('/myproperties?page=1')
+
+    try {
+        const { id } = req.user;
+
+        // limits and offset for paginator
+        const limit = 5
+        const offset = ((actualPage * limit) - limit)
+
+        const [properties, total] = await Promise.all([
+            await Property.findAll({
+                limit,
+                offset,
+                where: {
+                    userId: id
+                },
+                include: [
+                    { model: Category, as: 'category' },
+                    { model: Price, as: 'price' },
+                ]
+            }),
+            Property.count({
+                where: {
+                    userId: id
+                }
+            })
+        ])
+
+        res.render('properties/admin', {
+            page: 'My Properties',
+            csrfToken: req.csrfToken(),
+            properties,
+            pages: Math.ceil(total / limit),
+            total: Number(total),
+            actualPage: Number(actualPage),
+            offset: Number(offset),
+            limit: Number(limit),
+        })
+
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 export const create = async (req, res) => {
@@ -251,6 +281,7 @@ export const saveChanges = async (req, res) => {
         })
 
         await property.save();
+        return res.redirect('/myproperties')
     } catch (error) {
         console.log(error)
     }
