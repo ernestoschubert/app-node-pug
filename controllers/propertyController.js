@@ -326,7 +326,8 @@ export const viewProperty = async (req, res) => {
 
     return res.render('properties/view', {
         page: property.title,
-        data: property
+        data: property,
+        csrfToken: req.csrfToken(),
     })
 
 }

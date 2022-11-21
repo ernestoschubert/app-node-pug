@@ -8,9 +8,15 @@ header.bg-indigo-700.p-4
             a(href="/auth/signin") Log In
 
 div(class="bg-indigo-800 py-5 hidden lg:block")
-    div(class="container mx-auto flex justify-between")
-        a(href="/categories/1" class="text-sm font-bold uppercase text-white") Houses
-        a(href="/categories/2" class="text-sm font-bold uppercase text-white") Apartment
-        a(href="/categories/3" class="text-sm font-bold uppercase text-white") Grocery
-        a(href="/categories/4" class="text-sm font-bold uppercase text-white") Terrain
-        a(href="/categories/5" class="text-sm font-bold uppercase text-white") Cabin
+    div(class="container mx-auto flex justify-between items-center")
+        nav(class="flex gap-6")
+            a(href="/categories/1" class="text-sm font-bold uppercase text-white") Houses
+            a(href="/categories/2" class="text-sm font-bold uppercase text-white") Apartment
+            a(href="/categories/3" class="text-sm font-bold uppercase text-white") Grocery
+            a(href="/categories/4" class="text-sm font-bold uppercase text-white") Terrain
+            a(href="/categories/5" class="text-sm font-bold uppercase text-white") Cabin
+        form(action="/search" METHOD="POST" class="flex gap-3 items-center")
+            input(type="hidden", name="_csrf" value= csrfToken)
+            label(for="search" class="text-sm uppercase font-bold text-white")
+            input(type="search" name="search" class="rounded" id="search" placeholder="Search Properties" class="p-2 rounded-lg shadow")
+            input(type="submit" class="bg-indigo-900 hover:bg-indigo-700 cursor-pointer rounded-lg text-white uppercase font-bold p-2 text-sm"  value="Search") 
