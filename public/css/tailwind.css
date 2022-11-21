@@ -3,3 +3,16 @@
 @tailwind components;
 
 @tailwind utilities;
+
+.leaflet-popup-content p {
+    margin: 0;
+    font-size: .9rem;
+}
+
+.leaflet-container a {
+    color: #FFF
+}
+
+.leaflet-touch .leaflet-bar a {
+    color: #000
+}

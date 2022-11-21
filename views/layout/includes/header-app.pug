@@ -1,8 +1,16 @@
-header.bg-indigo-500.p-4
+header.bg-indigo-700.p-4
     div.container.mx-auto.flex.justify-between.p-3.items-center
-        h1.text-center.text-2xl.text-white.font-extrabold Bienes
-            span.font-normal Raices
+        h1.text-center.text-2xl.text-white.font-extrabold 
+            a(href="/") Bienes
+                span.font-normal Raices
         nav(class="my-4 md:my-2 md:flex md:items-center space-x-6 font-bold text-white hidden")
-            a(href="/myproperties") My Properties
-            a(href="/profile") Profile
-            a(href="/logout" class="bg-indigo-800 hover:bg-indigo-600 py-2 px-3 rounded-lg") Log out
+            a(href="/auth/signup") Sign Up
+            a(href="/auth/signin") Log In
+
+div(class="bg-indigo-800 py-5 hidden lg:block")
+    div(class="container mx-auto flex justify-between")
+        a(href="/categories/1" class="text-sm font-bold uppercase text-white") Houses
+        a(href="/categories/2" class="text-sm font-bold uppercase text-white") Apartment
+        a(href="/categories/3" class="text-sm font-bold uppercase text-white") Grocery
+        a(href="/categories/4" class="text-sm font-bold uppercase text-white") Terrain
+        a(href="/categories/5" class="text-sm font-bold uppercase text-white") Cabin
