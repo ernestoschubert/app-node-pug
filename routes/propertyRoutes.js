@@ -11,15 +11,18 @@ import {
     edit,
     saveChanges,
     remove,
-    viewProperty
+    viewProperty,
+    sendMessage,
+    viewMessages
 } from '../controllers/propertyController.js';
+import identifyUser from '../middleware/identifyUser.js';
 
 const router = express.Router();
 
 // Protected routes
 
-router.get('/myproperties', protectRoute, admin)
-router.get('/properties/create', protectRoute, create)
+router.get('/myproperties', protectRoute, admin);
+router.get('/properties/create', protectRoute, create);
 router.post('/properties/create',
     protectRoute,
     body('title').notEmpty().withMessage("Title is required"),
@@ -31,12 +34,12 @@ router.post('/properties/create',
     body('bathrooms').notEmpty().withMessage("Bathrooms is required"),
     body('street').notEmpty().withMessage("Location is required"),
     save
-)
+);
 
-router.get("/properties/addimg/:id", protectRoute, addImg)
-router.post("/properties/addimg/:id", protectRoute, upload.single("image"), storageImg)
+router.get("/properties/addimg/:id", protectRoute, addImg);
+router.post("/properties/addimg/:id", protectRoute, upload.single("image"), storageImg);
 
-router.get("/properties/edit/:id", protectRoute, edit)
+router.get("/properties/edit/:id", protectRoute, edit);
 router.post("/properties/edit/:id", protectRoute,
     body('title').notEmpty().withMessage("Title is required"),
     body('description').notEmpty().withMessage("Description is required"),
@@ -47,11 +50,26 @@ router.post("/properties/edit/:id", protectRoute,
     body('bathrooms').notEmpty().withMessage("Bathrooms is required"),
     body('street').notEmpty().withMessage("Location is required"),
     saveChanges
-)
+);
 
-router.post('/properties/delete/:id', protectRoute, remove)
+router.post('/properties/delete/:id', protectRoute, remove);
 
 // Public Area
-router.get('/property/:id', viewProperty)
+router.get('/property/:id',
+    identifyUser,
+    viewProperty
+);
 
+// storage the messages
+
+router.post('/property/:id',
+    identifyUser,
+    body('message').isLength({ min: 10 }).withMessage('The message cannot be empty or have less than 10 letters.'),
+    sendMessage,
+);
+
+router.get('/messages/:id',
+    protectRoute,
+    viewMessages
+)
 export default router;
