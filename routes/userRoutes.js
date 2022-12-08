@@ -1,6 +1,8 @@
 import express from 'express';
 import {
     signIn,
+    authenticateUser,
+    logout,
     signUpView,
     signUp,
     forgottenPassword,
@@ -10,13 +12,14 @@ import {
     resetPassword,
     verifyToken,
     newPassword,
-    authenticateUser,
 } from '../controllers/userController.js';
 
 const router = express.Router();
 
 router.get('/signin', signIn)
 router.post('/signin', authenticateUser)
+
+router.post('/logout', logout)
 
 router.get("/signup", signUpView)
 router.post("/signup", signUp)

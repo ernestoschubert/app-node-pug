@@ -69,6 +69,10 @@ export const authenticateUser = async (req, res) => {
     }).redirect('/myproperties')
 }
 
+export const logout = async (req, res) => {
+    return res.clearCookie('_token').status(200).redirect('/')
+}
+
 export const signUp = async (req, res) => {
     // extract data
     const { firstName, lastName, email, password } = req.body
