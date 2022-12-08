@@ -1,5 +1,8 @@
 extends ../layout/admin
 
+block styles 
+    meta(name="csrf-token" content=csrfToken)
+
 block content
     div
         h1.text-center.text-4xl.font-extrabold Bienes
@@ -33,9 +36,8 @@ block content
                                         a(href=`/messages/${property.id}` class="text-sm text-indigo-500 font-extrabold mx-5")= property.messages.length 
                                             span  messages
 
-                                    div(class="sm:w-1/4 md:w-2/6 lg:flex-1 flex flex-col md:flex-row gap-2")
-                                        form(action="#")
-                                            input(type="submit" class=`px-2 py-2 md:py-1 shadow text-xs leading-5 w-full text-semibold rounded cursor-pointer ${property.published ? "bg-green-200 text-green-800": "bg-yellow-100 text-yellow-800"}` value=`${property.published ? "Published": "Unpublished"}`)
+                                    div(class="sm:w-1/4 md:w-2/6 lg:w-1/6 flex flex-col md:flex-row gap-2")
+                                        button(type="button" data-property-id=`${property.id}` class=`change-status px-2 py-2 md:py-1 shadow text-xs leading-5 w-full text-semibold rounded cursor-pointer ${property.published ? "bg-green-200 text-green-800": "bg-yellow-100 text-yellow-800"}`)= `${property.published ? "Published": "Unpublished"}`
 
                                         a(href=`/properties/edit/${property.id}` class="px-2 py-2 md:py-1 shadow text-xs leading-5 text-semibold rounded w-full text-center cursor-pointer bg-indigo-200 text-indigo-800") Edit
 
@@ -63,3 +65,6 @@ block content
 
         else 
             p.text-center No properties
+
+block scripts
+    script(src="js/changeStatus.js")

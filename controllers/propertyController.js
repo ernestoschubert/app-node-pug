@@ -286,6 +286,27 @@ export const saveChanges = async (req, res) => {
 
 }
 
+export const modifyPropertyStatus = async (req, res) => {
+    // validate if property exists
+    const { id } = req.params
+
+    const property = await Property.findByPk(id)
+
+    if (!property) res.redirect('/myproperties')
+
+    // verify if user is the owner of the property
+    if (property.userId.toString() !== req.user.id.toString()) res.redirect('/myproperties')
+
+    // update
+    property.published = !property.published
+
+    await property.save()
+
+    res.json({
+        response: true,
+    })
+}
+
 export const remove = async (req, res) => {
 
     // validate if property exists
@@ -320,7 +341,7 @@ export const viewProperty = async (req, res) => {
         ]
     })
 
-    if (!property) res.redirect('/404')
+    if (!property || !property.published) res.redirect('/404')
 
 
 

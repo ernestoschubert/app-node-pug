@@ -10,6 +10,7 @@ import {
     storageImg,
     edit,
     saveChanges,
+    modifyPropertyStatus,
     remove,
     viewProperty,
     sendMessage,
@@ -51,6 +52,11 @@ router.post("/properties/edit/:id", protectRoute,
     body('street').notEmpty().withMessage("Location is required"),
     saveChanges
 );
+
+router.put('/properties/:id',
+    protectRoute,
+    modifyPropertyStatus
+)
 
 router.post('/properties/delete/:id', protectRoute, remove);
 
